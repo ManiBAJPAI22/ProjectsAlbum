@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TODO app</title>
+  <link rel="stylesheet" href="output.css" />
+</head>
+<body>
+  <div class="flex justify-center items-center h-screen">
+    <div class="text-center">
+      <p class="font-serif text-xl font-semibold mb-4">
+        Todo title
+        <input
+          class="box-border h-10 w-64 px-4 py-2 border-2 border-cyan-500 focus:border-cyan-600 rounded-lg"
+          type="text"
+          id="title1"
+        />
+      </p>
+      <p class="font-serif text-xl font-semibold mb-4">
+        Todo description
+        <input
+          class="box-border h-10 w-64 px-4 py-2 border-2 border-cyan-500 focus:border-cyan-600 rounded-lg"
+          type="text"
+          id="description"
+        />
+      </p>
+      <button
+        class="bg-cyan-500 hover:bg-cyan-600 px-6 py-2 rounded-full outline-double outline-3 outline-offset-2"
+        onclick="onPress()"
+      >
+        Send Todo
+      </button>
+    </div>
+  </div>
+
+  <div id="mainArea"></div>
+
+  <script>
+    function deleteDone() {
+      console.log("done delete");
+      // Delete the right todo from the list
+      // You will need to give each todo an id, and that should be enough to remove it
+    }
+
+    function deleteTodo(id) {
+      fetch("http://localhost:3000/todos/" + id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(deleteDone);
+    }
+
+    function todosCallback(data) {
+      var parentElement = document.getElementById("mainArea");
+      parentElement.innerHTML = ""; // Clear existing content before updating
+      for (var i = 0; i < data.length; i++) {
+        var childElement = document.createElement("div");
+
+        var grandChildElement1 = document.createElement("span");
+        grandChildElement1.innerHTML = data[i].title;
+
+        var grandChildElement2 = document.createElement("span");
+        grandChildElement2.innerHTML = data[i].description;
+
+        var grandChildElement3 = document.createElement("button");
+        grandChildElement3.innerHTML = "Delete";
+        grandChildElement3.setAttribute(
+          "onclick",
+          "deleteTodo(" + data[i].id + ")"
+        );
+
+        childElement.appendChild(grandChildElement1);
+        childElement.appendChild(grandChildElement2);
+        childElement.appendChild(grandChildElement3);
+
+        parentElement.appendChild(childElement);
+      }
+    }
+
+    function getDataCallback(resp) {
+      resp.json().then(todosCallback);
+    }
+
+    function getData() {
+      fetch("http://localhost:3000/todos", {
+        method: "GET",
+      })
+        .then((resp) => resp.json())
+        .then(getDataCallback)
+        .catch((error) => console.error(error));
+    }
+
+    getData();
+
+    function parsedResponse(data) {
+      console.log(data);
+      var parentElement = document.getElementById("mainArea");
+      var childElement = document.createElement("div");
+
+      var grandChildElement1 = document.createElement("span");
+      grandChildElement1.innerHTML = data.title;
+
+      var grandChildElement2 = document.createElement("span");
+      grandChildElement2.innerHTML = data.description;
+
+      var grandChildElement3 = document.createElement("button");
+      grandChildElement3.innerHTML = "Delete";
+
+      childElement.appendChild(grandChildElement1);
+      childElement.appendChild(grandChildElement2);
+      childElement.appendChild(grandChildElement3);
+
+      parentElement.appendChild(childElement);
+    }
+
+    function callback(resp) {
+      resp.json().then(parsedResponse);
+    }
+
+    function onPress() {
+      var title = document.getElementById("title1").value;
+      var description = document.getElementById("description").value;
+
+      fetch("http://localhost:3000/todos", {
+        method: "POST",
+        body: JSON.stringify({
+          title: title,
+          description: description,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => resp.json())
+        .then(callback)
+        .catch((error) => console.error(error));
+
+      // After sending the new todo, update the list of todos by fetching data again
+      getData();
+    }
+  </script>
+</body>
+</html>
