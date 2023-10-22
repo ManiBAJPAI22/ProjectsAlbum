@@ -1,1 +1,3 @@
 # BTP
+LNMshop is the go-to online platform for students at LNMIIT (LNM Institute of Information Technology) to conveniently purchase various items, collaborate for carpooling, and actively participate in recycling initiatives. With a diverse range of offerings, LNMshop serves as a one-stop solution to cater to the needs and sustainability goals of the LNMIIT community. 
+Whether it's shopping for essentials, coordinating transportation, or contributing to environmental conservation through recycling, LNMshop provides a centralized hub for students to engage in these activities, fostering a vibrant and eco-conscious campus environment.
